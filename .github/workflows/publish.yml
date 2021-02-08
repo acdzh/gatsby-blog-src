@@ -1,0 +1,26 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Rapid Theme
+        uses: actions/checkout@master
+        repository: acdzh/gatsby-theme-rapid
+        path: .
+      - name: ls
+        run: tree
+      - name: Copy Files
+        run: mkdir ./content && mv -r assets ./content/ && mv -r blog ./content/
+      - name: ls
+        run: tree
+      - uses: enriikke/gatsby-gh-pages-action@v2
+        with:
+          access-token: ${{ secrets.ACCESS_TOKEN }}
+          deploy-branch: gh-pages
