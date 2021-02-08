@@ -11,13 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone Rapid Theme
-        uses: actions/checkout@master
-        repository: acdzh/gatsby-theme-rapid
-        path: .
+        uses: actions/checkout@v2
+        with:
+          repository: acdzh/gatsby-theme-rapid
+          path: .
       - name: ls
         run: tree
-      - name: Copy Files
-        run: mkdir ./content && mv -r assets ./content/ && mv -r blog ./content/
+      - name: Checkout Content
+        uses: actions/checkout@v2
+        with:
+          repository: acdzh/gatsby-blog-src
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: ./content
       - name: ls
         run: tree
       - uses: enriikke/gatsby-gh-pages-action@v2
