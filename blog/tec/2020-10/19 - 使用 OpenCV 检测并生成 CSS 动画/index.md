@@ -2,7 +2,7 @@
 title: "使用 OpenCV 检测并生成 CSS 动画"
 date: 2020-10-19T15:44:21+08:00
 draft: false
-comment: false
+comment: true
 description: 
 author: 
 from: 
