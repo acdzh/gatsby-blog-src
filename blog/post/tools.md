@@ -27,7 +27,7 @@ toc: true
     } else if (type === 'downloads') { 
       open('https://acdzharia2.herokuapp.com/downloads/'+btoa(val)+'/');
     } else if (type === 'onedrive') {
-      open('https://od.acdzh.com/aria2');
+      open('https://od.acdzh.com/Private/aria2');
     }
   };
 }}>

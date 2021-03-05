@@ -3,6 +3,7 @@ title: "ShortCode 测试页"
 date: 2020-04-24T22:52:10+08:00
 draft: false
 comment: true
+slug: shortcode_test
 description: ""
 tags: []
 series: []
