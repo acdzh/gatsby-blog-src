@@ -1,5 +1,5 @@
 ---
-title: "两天实现光线追踪 3 - 反射、材质与折射"
+title: "两天实现光线追踪 3 - 反射与材质"
 date: 2020-12-31T16:01:20+08:00
 draft: false
 comment: true
@@ -8,9 +8,9 @@ author:
 from: 
 url: 
 slug: realize_ray_tracing_in_two_days_3
-cover:
+cover: ./210318163301.png
 tags: [RTX, 光线追踪, 图形学, 渲染]
-series: []
+series: [两天实现光线追踪]
 categories: [技术, 计算机图形学]
 ---
 

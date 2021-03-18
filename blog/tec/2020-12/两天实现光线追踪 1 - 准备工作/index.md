@@ -8,9 +8,9 @@ author:
 from: 
 url: 
 slug: realize_ray_tracing_in_two_days_1
-cover:
+cover: ./2103181455_cover.png
 tags: [RTX, 光线追踪, 图形学, 渲染]
-series: []
+series: [两天实现光线追踪]
 categories: [技术, 计算机图形学]
 ---
 
