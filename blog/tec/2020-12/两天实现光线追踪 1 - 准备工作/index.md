@@ -16,6 +16,8 @@ categories: [技术, 计算机图形学]
 
 接上文 [十分钟学会光线追踪](/tec/2020-12/ray_tracing_in_10_minutes/)
 
+该系列是 *Peter Shirley* 的 *[Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html)* 一书的 typescript 实现, 实现过程中参考了一些 https://zhuanlan.zhihu.com/p/42218384 的代码, 感谢.
+
 ## 准备工作
 
 ### 页面结构

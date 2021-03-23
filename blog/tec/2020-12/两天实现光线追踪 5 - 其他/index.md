@@ -133,11 +133,153 @@ export default class Plane implements Hitable {
 
 ### 景深与光圈
 
-// TODO
+最后实现的功能是散焦模糊 (Defocus Blur), 也被称作是*景深*. 摄像机的散焦会受到物距与光圈大小的影响, 不在镜头焦点上的物体会有一定的模糊, 我们可以近似地模拟这种现象.
+
+![](./210323150701.png)
+
+由上图可知, 弥散的程度与光圈大小和焦距有关. 我们新增两个属性: `aspect` 和 `focusDist` 分别来表示这两个量. 后者则默认取一半 `origin` 和 `lookto` 之间的距离.
+
+我们先放一个生成平面单位圆内随机向量的函数在这里, 待会要用到:
+
+```ts
+// get a Vec(a, b, 0) that: a ∈ (-1, 1) && b ∈ (-1, 1) & a^2 + b^2 < 1
+function randomInUnitDist(): Vec3 {
+  while (true) {
+    let p = (new Vec3(Math.random(), Math.random(), 0)).mul(2).sub(new Vec3(1, 1, 0))
+    if (Vec3.dot(p, p) < 1) return p;
+  }
+};
+```
+
+我们没有必要去完全模拟真实的镜头内部 (况且我们成像都是在镜头前侧成的), 只要能模拟成像效果即可. 在之前的模型中, 我们的光线是从一个点发出的, 现在我们改一下, 让光线从一个圆发出.
+
+另外, 之前的成像屏是在一个固定的位置 (可以回去看看旧的 `Camera` 的 `getRay` 方法实现), 现在我们为了偷懒, 直接把成像屏放在 `lookto` 处. 然后给光线的方向添加随机扰动, 全部代码如下:
+
+```ts
+export default class Camera {
+  origin: Vec3;
+  vertical: Vec3;
+  horizontal: Vec3;
+  leftBottom: Vec3;
+
+  lensRadius:number
+  focusDist:number
+
+  front: Vec3; // w
+  right: Vec3; // u
+  up: Vec3; // v
+
+  constructor(origin: Vec3, lookto: Vec3, vup: Vec3, vfov: number, aspect = 2, aperture:number, focuDist?: number) {
+    const θ = (vfov * Math.PI) / 180;
+    const harfHeight = Math.tan(θ / 2);
+    const harfWidth = harfHeight * aspect;
+
+    this.front = lookto.sub(origin).unitVec();
+    this.right = Vec3.cross(this.front, vup).unitVec();
+    this.up = Vec3.cross(this.right, this.front).unitVec();
+
+    this.origin = origin;
+    this.lensRadius = aperture / 2;
+    this.focusDist = focuDist ? focuDist : origin.sub(lookto).length();
+    this.vertical = this.up.mul((harfHeight * 2) * this.focusDist);
+    this.horizontal = this.right.mul((harfWidth * 2) * this.focusDist);
+    this.leftBottom = origin
+    .sub(this.vertical.mul(0.5))
+    .sub(this.horizontal.mul(0.5))
+    .add(this.front.mul(this.focusDist));
+  }
+
+  getRay(x: number, y: number): Ray {
+    const rd  = randomInUnitDist().mul(this.lensRadius)
+    const offset = this.right.mul(rd.e0).add(this.up.mul(rd.e1))
+
+    return new Ray(
+      this.origin.add(offset),
+      this.leftBottom
+        .add(this.horizontal.mul(x))
+        .add(this.vertical.mul(y))
+        .sub(this.origin)
+        .sub(offset)
+    );
+  }
+}
+```
+
+![](./210323195401.png)
 
 ### 最终效果图实现
 
-//TODO
+为保证不同 worker 里随机数的一致性, 我们使用自己的随机函数:
+
+```ts
+function random(seed: number) {
+  return parseFloat(`0.${ Math.sin(seed).toString().substr(6)}`);
+}
+```
+
+之后创建一个场景.
+
+```ts
+function createSence(): Hitable {
+  const list: Hitable[] = new Array(20)
+    .fill(0)
+    .map((v, _a) =>
+      new Array(20).fill(0).map((v, _b) => {
+        const a = _a - 11;
+        const b = _b - 11;
+        const choose_mat = random(a * 310 + b);
+        const center = new Vec3(a + 0.9 * random(a * 311 + b), 0.2, b + 0.9 * random(a * 312 + b));
+        if (center.sub(new Vec3(4, 0.2, 0)).length() > 0.9) {
+          if (choose_mat < 0.4) {
+            return new Sphere(
+              center,
+              0.2,
+              new Lambertian(
+                new Vec3(
+                  random(a * 313 + b) * random(a * 314 + b),
+                  random(a * 315 + b) * random(a * 316 + b),
+                  random(a * 317 + b) * random(a * 318 + b)
+                )
+              )
+            );
+          } else if (choose_mat < 0.7) {
+            return new Sphere(
+              center,
+              0.2,
+              new Metal(
+                new Vec3(0.5 * random(a * 319 + b), 0.5 * (1 + random(a * 320 + b)), 0.5 * (1 + random(a * 321 + b))),
+                0.5 * (1 + random(a * 322 + b))
+              )
+            );
+          } else {
+            return new Sphere(center, 0.2, new Dielectric(new Vec3(1, 1, 1), 1.5));
+          }
+        }
+      })
+    )
+    .reduce((a, b) => a.concat(b))
+    .filter(i => i);
+
+  list.push(new Sphere(new Vec3(4, 1, 0), 1, new Metal(new Vec3(0.7, 0.6, 0.5), 0)));
+  list.push(new Sphere(new Vec3(-4, 1, 0), 1, new Lambertian(new Vec3(0.4, 0.2, 0.1))));
+  list.push(new Sphere(new Vec3(0, 1, 0), 1, new Dielectric(new Vec3(1, 1, 1), 1.5)));
+  list.push(new Sphere(new Vec3(0, -1000, 0), 1000, new Lambertian(new Vec3(0.5, 0.5, 0.5))));
+
+  return new HitList(list);
+}
+
+const world = createSence();
+```
+
+再放一个摄像机(我不喜欢景深, 在这里没有开)
+
+```ts
+const camera = new Camera(new Vec3(9, 1.1, 2), new Vec3(0, 0.6, -1), new Vec3(0, 1, 0), 30, 2, 0);
+```
+
+这样效果图就渲染出来了:
+
+![](../十分钟学会光线追踪/demo.png)
 
 ## 历史记录
 

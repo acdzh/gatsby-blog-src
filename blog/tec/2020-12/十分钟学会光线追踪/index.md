@@ -97,7 +97,9 @@ categories: [技术, 计算机图形学]
 
 光线追踪的原理异常简单, 用几句话就可以说清楚. 因此实现一个自己的渲染器也是件非常轻松的事 (相比于传统渲染), 如果不考虑性能的话.
 
-有许多教程, 但其中最新手友好的还是 *Peter Shirley* 的 *[Ray Tracing in One Weekend](https://od.acdzh.com/Books/Computer/CG/Ray%20Tracing%20in%20One%20Weekend.pdf)* 这本书(小册子?).  该系列有三本书, 另外两本分别是 *[Ray Tracing: The Next Week](https://od.acdzh.com/Books/Computer/CG/Ray%20Tracing_%20The%20Next%20Week.pdf)* 和 *[Ray Tracing: The Rest Of Your Life](https://od.acdzh.com/Books/Computer/CG/Ray%20Tracing_%20the%20Rest%20of%20Your%20Life.pdf)* (已烂尾). 第一本就是本文的内容, 教你如何从零开始写出一个玩具型的渲染器.
+有许多教程, 但其中最新手友好的还是 *Peter Shirley* 的 *Ray Tracing in One Weekend* 这本书(小册子?).  该系列有三本书, 另外两本分别是 *Ray Tracing: The Next Week* 和 *Ray Tracing: The Rest Of Your Life* (已烂尾). 第一本就是本文的内容, 教你如何从零开始写出一个玩具型的渲染器.
+
+这三本书可以在 https://github.com/RayTracing/raytracing.github.io 找到.
 
 这一系列也有许多翻译和推荐的文章, 以及其他语言的实现.
 

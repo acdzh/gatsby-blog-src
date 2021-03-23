@@ -147,7 +147,7 @@ export default class Ray {
 
   constructor(origin: Vec3, direction: Vec3) {
     this.origin = origin;
-    this.direction = direction;
+    this.direction = direction.unitVec();
   }
 
   getPoint(t: number) {

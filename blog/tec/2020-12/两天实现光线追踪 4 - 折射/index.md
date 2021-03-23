@@ -167,7 +167,7 @@ const schlick = (cosine: number, refractivity: number): number => {
     }
   }
 ```
-效果如下, 注意透明球的右侧的绿色反光以及那一圈反光.
+效果如下, 注意透明球的右侧的绿色反光. (后来发现这里有错误, 这两张图是在后面更新摄像机实现后重新渲染的, 因此视角与前面稍有不一致)
 
 ![](./210318170001.png)
 
@@ -180,3 +180,4 @@ const schlick = (cosine: number, refractivity: number): number => {
 |Version| Action|Time|
 |:-------:|:--------:|:-----------:|
 |1.0|Init|2021-03-18 16:44:19|
+|1.1|修正菲涅耳方程效果示意图|2021-03-23 17:34:31|
